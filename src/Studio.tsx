@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { BookOpen, BriefcaseBusiness, ChevronDown, CircleCheck, Code2, Copy, FileText, FolderGit2, GraduationCap, Layers3, ListChecks, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react'
+import { BookOpen, BriefcaseBusiness, ChevronDown, CircleCheck, Code2, Copy, Download, FileText, FolderGit2, GraduationCap, Layers3, ListChecks, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react'
+import { exportResume } from './exports'
 import { ItemEditor } from './Bank'
 import sample from './data/sample.json'
 import { emptyData, roleTracks, sectionNames, type Data, type Item, type SectionKey, type Variant, type VariantConfig, type VariantTrack } from './model'
@@ -27,7 +28,7 @@ export function Studio() {
   const onboarding = !variant && !data.settings.some(({ key }) => key === 'onboarded') && !data.master_items.length && !data.profile[0]?.full_name
   const demo = sampleData.resume_variants[0]
   return <div className="view studio-view">
-    <header className="page-heading studio-heading"><div><h1>Variant Studio</h1><p>Tailor your resume for each application.</p></div></header>
+    <header className="page-heading studio-heading"><div><h1>Variant Studio</h1><p>Tailor your resume for each application.</p></div>{variant && <ExportActions variant={variant} data={data}/>}</header>
     <div className="variant-toolbar panel">
       <div className="variant-main">
         <span className="variant-icon"><FileText size={19}/></span>
@@ -71,6 +72,20 @@ export function Studio() {
         <button className="button danger" onClick={async () => { if (await remove('variant', variant.id)) setDialog(undefined) }}>Delete variant</button></div>
     </Modal>}
     {dialog && dialog !== 'delete' && <VariantForm mode={dialog} variant={variant} close={() => setDialog(undefined)} saved={(id) => { setVariantId(id); setDialog(undefined) }}/>}
+  </div>
+}
+
+
+function ExportActions({ variant, data }: { variant: Variant; data: Data }) {
+  const [exporting, setExporting] = useState(false)
+  const run = async (format: 'pdf' | 'tex') => {
+    setExporting(true)
+    try { await exportResume(format, buildResume(data, variant.config_json), variant.name) }
+    finally { setExporting(false) }
+  }
+  return <div className="heading-actions">
+    <button className="button" disabled={exporting} onClick={() => void run('tex')}><Code2 size={15}/> Export .tex</button>
+    <button className="button primary" disabled={exporting} onClick={() => void run('pdf')}><Download size={15}/> Export PDF</button>
   </div>
 }
 

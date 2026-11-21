@@ -7,3 +7,8 @@ export async function openLink(url: string) {
     else window.open(url, '_blank', 'noopener,noreferrer')
   } catch (error) { useStore.getState().setError(String(error)) }
 }
+
+export async function revealFile(path: string) {
+  try { await invoke('reveal_file', { path }) }
+  catch (error) { useStore.getState().setError(String(error)) }
+}

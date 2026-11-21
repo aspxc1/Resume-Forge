@@ -9,13 +9,28 @@ pub use sample::seed;
 #[derive(Clone, Copy, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Table {
-    Profile, Item, Bullet, Category, Skill, Variant, Snapshot, Application, Setting,
+    Profile,
+    Item,
+    Bullet,
+    Category,
+    Skill,
+    Variant,
+    Snapshot,
+    Application,
+    Setting,
 }
 
 impl Table {
     pub const ALL: [Self; 9] = [
-        Self::Profile, Self::Item, Self::Bullet, Self::Category, Self::Skill,
-        Self::Variant, Self::Snapshot, Self::Application, Self::Setting,
+        Self::Profile,
+        Self::Item,
+        Self::Bullet,
+        Self::Category,
+        Self::Skill,
+        Self::Variant,
+        Self::Snapshot,
+        Self::Application,
+        Self::Setting,
     ];
 
     pub fn name(self) -> &'static str {
@@ -47,7 +62,11 @@ impl Table {
     }
 
     fn key(self) -> &'static str {
-        if matches!(self, Self::Setting) { "key" } else { "id" }
+        if matches!(self, Self::Setting) {
+            "key"
+        } else {
+            "id"
+        }
     }
 
     fn order(self) -> &'static str {
@@ -64,8 +83,7 @@ pub fn open(path: &Path) -> Result<Connection, String> {
     if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {
         std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
-    migrate(Connection::open(path).map_err(|e| e.to_string())?)
-        .map_err(|e| e.to_string())
+    migrate(Connection::open(path).map_err(|e| e.to_string())?).map_err(|e| e.to_string())
 }
 
 pub fn migrate(mut conn: Connection) -> rusqlite::Result<Connection> {
@@ -89,7 +107,12 @@ pub fn now() -> String {
 
 pub fn read(conn: &Connection, table: Table) -> Result<Vec<Value>, String> {
     let fields: Vec<_> = table.fields().split_whitespace().collect();
-    let sql = format!("SELECT {} FROM {} ORDER BY {}", fields.join(","), table.name(), table.order());
+    let sql = format!(
+        "SELECT {} FROM {} ORDER BY {}",
+        fields.join(","),
+        table.name(),
+        table.order()
+    );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let mut result = Vec::new();
     let mut rows = stmt.query([]).map_err(|e| e.to_string())?;
@@ -99,7 +122,9 @@ pub fn read(conn: &Connection, table: Table) -> Result<Vec<Value>, String> {
             let value = match row.get::<_, SqlValue>(index).map_err(|e| e.to_string())? {
                 SqlValue::Null => Value::Null,
                 SqlValue::Integer(n) => Value::from(n),
-                SqlValue::Text(s) if field.ends_with("_json") => serde_json::from_str(&s).map_err(|e| e.to_string())?,
+                SqlValue::Text(s) if field.ends_with("_json") => {
+                    serde_json::from_str(&s).map_err(|e| e.to_string())?
+                }
                 SqlValue::Text(s) => Value::from(s),
                 _ => return Err(format!("Unexpected value in {field}")),
             };
@@ -111,21 +136,33 @@ pub fn read(conn: &Connection, table: Table) -> Result<Vec<Value>, String> {
 }
 
 pub fn state(conn: &Connection) -> Result<Value, String> {
-    Table::ALL.into_iter().map(|table| {
-        read(conn, table).map(|rows| (table.name().to_string(), Value::Array(rows)))
-    }).collect::<Result<Map<_, _>, _>>().map(Value::Object)
+    Table::ALL
+        .into_iter()
+        .map(|table| read(conn, table).map(|rows| (table.name().to_string(), Value::Array(rows))))
+        .collect::<Result<Map<_, _>, _>>()
+        .map(Value::Object)
 }
 
 pub fn save(conn: &Connection, table: Table, value: &Value) -> Result<(), String> {
     write_row(conn, table, value, false)
 }
 
-pub(crate) fn write_row(conn: &Connection, table: Table, value: &Value, preserve: bool) -> Result<(), String> {
+pub(crate) fn write_row(
+    conn: &Connection,
+    table: Table,
+    value: &Value,
+    preserve: bool,
+) -> Result<(), String> {
     let mut data = value.as_object().ok_or("Expected a record")?.clone();
     let key = table.key();
     if matches!(table, Table::Profile) {
         data.insert("id".into(), Value::from(1));
-    } else if data.get(key).and_then(Value::as_str).filter(|s| !s.trim().is_empty()).is_none() {
+    } else if data
+        .get(key)
+        .and_then(Value::as_str)
+        .filter(|s| !s.trim().is_empty())
+        .is_none()
+    {
         return Err(format!("Missing {key}"));
     }
     let fields: Vec<_> = table.fields().split_whitespace().collect();
@@ -141,7 +178,9 @@ pub(crate) fn write_row(conn: &Connection, table: Table, value: &Value, preserve
     let mut columns = Vec::new();
     let mut values = Vec::new();
     for field in fields {
-        let Some(value) = data.get(field) else { continue };
+        let Some(value) = data.get(field) else {
+            continue;
+        };
         let sql_value = match value {
             Value::Null => SqlValue::Null,
             value if field.ends_with("_json") => SqlValue::Text(value.to_string()),
@@ -153,8 +192,11 @@ pub(crate) fn write_row(conn: &Connection, table: Table, value: &Value, preserve
         values.push(sql_value);
     }
     let bindings = vec!["?"; columns.len()].join(",");
-    let updates: Vec<_> = columns.iter().filter(|&&col| col != key && col != "created_at")
-        .map(|col| format!("{col}=excluded.{col}")).collect();
+    let updates: Vec<_> = columns
+        .iter()
+        .filter(|&&col| col != key && col != "created_at")
+        .map(|col| format!("{col}=excluded.{col}"))
+        .collect();
     let conflict = if matches!(table, Table::Snapshot) {
         String::new()
     } else if updates.is_empty() {
@@ -162,8 +204,13 @@ pub(crate) fn write_row(conn: &Connection, table: Table, value: &Value, preserve
     } else {
         format!(" ON CONFLICT({key}) DO UPDATE SET {}", updates.join(","))
     };
-    let sql = format!("INSERT INTO {} ({}) VALUES ({bindings}){conflict}", table.name(), columns.join(","));
-    conn.execute(&sql, params_from_iter(values)).map_err(|e| e.to_string())?;
+    let sql = format!(
+        "INSERT INTO {} ({}) VALUES ({bindings}){conflict}",
+        table.name(),
+        columns.join(",")
+    );
+    conn.execute(&sql, params_from_iter(values))
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -171,8 +218,11 @@ pub fn delete(conn: &Connection, table: Table, id: &str) -> Result<(), String> {
     if matches!(table, Table::Profile | Table::Snapshot) {
         return Err("This record cannot be deleted".into());
     }
-    conn.execute(&format!("DELETE FROM {} WHERE {}=?", table.name(), table.key()), [id])
-        .map_err(|e| e.to_string())?;
+    conn.execute(
+        &format!("DELETE FROM {} WHERE {}=?", table.name(), table.key()),
+        [id],
+    )
+    .map_err(|e| e.to_string())?;
     Ok(())
 }
 

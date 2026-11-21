@@ -1,0 +1,33 @@
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tabularx}
+\usepackage{array}
+
+\input{glyphtounicode}
+\pdfgentounicode=1
+\pagestyle{empty}
+\raggedright
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\tabcolsep}{0pt}
+\setlength{\headheight}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\footskip}{0pt}
+
+\newcommand{\resumeItem}[1]{\item {\small #1}}
+\newcommand{\resumeSubheading}[4]{%
+  \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}X r@{}}
+  \textbf{#1} & #2 \\
+  \textit{\small #3} & \textit{\small #4}
+  \end{tabularx}\par
+}
+\newcommand{\resumeProjectHeading}[2]{%
+  \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}X r@{}}
+  #1 & #2
+  \end{tabularx}\par
+}
+\titleformat{\section}{\scshape\raggedright\large}{}{0em}{}[{\titlerule[0.75pt]}]

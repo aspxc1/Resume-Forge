@@ -1,3 +1,5 @@
+mod files;
+
 use crate::db::{self, Table};
 use rusqlite::Connection;
 use serde_json::Value;
@@ -19,7 +21,11 @@ fn load_data(database: State<'_, Database>) -> Result<Value, String> {
 }
 
 #[tauri::command]
-fn save_records(database: State<'_, Database>, table: Table, records: Vec<Value>) -> Result<Value, String> {
+fn save_records(
+    database: State<'_, Database>,
+    table: Table,
+    records: Vec<Value>,
+) -> Result<Value, String> {
     if matches!(table, Table::Snapshot) {
         return Err("Use the snapshot workflow to freeze a resume".into());
     }
@@ -44,10 +50,15 @@ fn seed_demo(database: State<'_, Database>) -> Result<Value, String> {
 
 #[tauri::command]
 fn open_link(app: tauri::AppHandle, url: String) -> Result<(), String> {
-    if !["https://", "http://", "mailto:"].iter().any(|scheme| url.starts_with(scheme)) {
+    if !["https://", "http://", "mailto:"]
+        .iter()
+        .any(|scheme| url.starts_with(scheme))
+    {
         return Err("Only web and email links can be opened".into());
     }
-    app.opener().open_url(url, None::<&str>).map_err(|e| e.to_string())
+    app.opener()
+        .open_url(url, None::<&str>)
+        .map_err(|e| e.to_string())
 }
 
 pub fn run() {
@@ -55,12 +66,23 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
-            let path = app.path().data_dir()?.join("ResumeForge");
-            let connection = db::open(&path.join("resumeforge.db")).map_err(std::io::Error::other)?;
+            let path = files::data_dir(app.handle()).map_err(std::io::Error::other)?;
+            let connection =
+                db::open(&path.join("resumeforge.db")).map_err(std::io::Error::other)?;
             app.manage(Database(Mutex::new(connection)));
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![load_data, save_records, delete_record, seed_demo, open_link])
+        .invoke_handler(tauri::generate_handler![
+            load_data,
+            save_records,
+            delete_record,
+            seed_demo,
+            open_link,
+            files::export_resume,
+            files::check_pdflatex,
+            files::reveal_file,
+            files::pick_directory
+        ])
         .run(tauri::generate_context!())
         .expect("ResumeForge could not start");
 }

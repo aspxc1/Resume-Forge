@@ -1,6 +1,7 @@
 import { Fragment, type CSSProperties, type ReactNode, type Ref } from 'react'
 import { isTauri } from '@tauri-apps/api/core'
 import { type ResumeDocument } from './model'
+import { openLink } from './native'
 import { safeUrl } from './resume'
 import './fonts.css'
 import './paper.css'
@@ -20,7 +21,7 @@ function Link({ href, children, interactive }: { href?: string; children: ReactN
   if (!href) return <>{children}</>
   return <a href={href} target="_blank" rel="noreferrer" onClick={interactive && isTauri() ? (event) => {
     event.preventDefault()
-    void import('./native').then(({ openLink }) => openLink(href))
+    void openLink(href)
   } : undefined}>{children}</a>
 }
 

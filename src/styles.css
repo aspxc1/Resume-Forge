@@ -186,3 +186,6 @@ select.zoom { width: auto; min-height: 26px; padding: 3px 5px; font-size: 11px; 
 @media(max-width: 1000px) { .studio-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
 @media(max-width: 750px) { .studio-grid { grid-template-columns: 1fr; } .preview { position: static; } .studio-heading { flex-wrap: wrap; } }
 .page-frame { overflow: clip; box-shadow: 0 8px 26px #0007; }
+.heading-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.settings-panel { max-width: 850px; padding: 17px; }
+.settings-panel + .settings-panel { margin-top: 16px; }

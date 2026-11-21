@@ -30,8 +30,9 @@ interface Store {
   view: View
   error: string
   notice: string
+  noticePath?: string
   setView: (view: View) => void
-  setNotice: (notice: string) => void
+  setNotice: (notice: string, noticePath?: string) => void
   setError: (error: string) => void
   load: () => Promise<boolean>
   seed: () => Promise<boolean>
@@ -59,7 +60,7 @@ export const useStore = create<Store>((set) => {
   return {
     data: emptyData, loaded: false, view: 'studio', error: '', notice: '',
     setView: (view) => set({ view }),
-    setNotice: (notice) => set({ notice }),
+    setNotice: (notice, noticePath) => set({ notice, noticePath }),
     setError: (error) => set({ error }),
     load: () => update(async () => native ? invoke<Data>('load_data') : devData()),
     refresh: (command, args) => update(() => invoke<Data>(command, args)),
