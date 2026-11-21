@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { BookOpen, BriefcaseBusiness, ChevronDown, CircleCheck, Code2, Copy, Download, FileText, FolderGit2, GraduationCap, Layers3, ListChecks, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react'
+import { BookOpen, BriefcaseBusiness, ChevronDown, CircleCheck, Code2, Copy, Download, FileText, FolderGit2, GraduationCap, Layers3, ListChecks, Pencil, Plus, ScanSearch, Sparkles, Trash2 } from 'lucide-react'
 import { exportResume } from './exports'
 import { ItemEditor } from './Bank'
 import sample from './data/sample.json'
 import { emptyData, roleTracks, sectionNames, type Data, type Item, type SectionKey, type Variant, type VariantConfig, type VariantTrack } from './model'
+import { Matcher } from './Matcher'
 import { Preview } from './Preview'
 import { buildResume, newConfig, orderedRows, selectTrack, toggleBullet, toggleItem, toggleSkill } from './resume'
 import { useStore } from './store'
@@ -20,7 +21,8 @@ export function Studio() {
   const save = useStore((s) => s.save)
   const seed = useStore((s) => s.seed)
   const setView = useStore((s) => s.setView)
-  const [variantId, setVariantId] = useState('')
+  const variantId = useStore((s) => s.variantId)
+  const setVariantId = useStore((s) => s.setVariantId)
   const [catalog, setCatalog] = useState(false)
   const [dialog, setDialog] = useState<'create' | 'clone' | 'rename' | 'delete'>()
   const variant = data.resume_variants.find((item) => item.id === variantId) ?? data.resume_variants[0]
@@ -111,6 +113,8 @@ function VariantForm({ mode, variant, close, saved }: { mode: 'create' | 'clone'
 
 function VariantWorkspace({ variant, data }: { variant: Variant; data: Data }) {
   const [config, setConfig] = useState(variant.config_json)
+  const jobAppId = useStore((s) => s.job.applicationId)
+  const [tab, setTab] = useState<'content' | 'matcher'>(jobAppId ? 'matcher' : 'content')
   const [expanded, setExpanded] = useState<SectionKey[]>(['education', 'experience', 'projects'])
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [editing, setEditing] = useState<Item>()
@@ -130,7 +134,15 @@ function VariantWorkspace({ variant, data }: { variant: Variant; data: Data }) {
         <div className="track-actions">{roleTracks.map((track) => <button className={track === variant.track ? 'chip selected' : 'chip'} key={track} onClick={() => update(selectTrack(data, config, track), track)} aria-label={`Apply ${track} Track`}>{track}</button>)}</div>
       </section>
       <section className="panel structure-panel">
-        <div className="studio-tabs"><span><ListChecks size={16}/> Resume content</span></div>
+        <div className="studio-tabs" role="tablist" aria-label="Variant tools">
+          <button role="tab" id="content-tab" aria-controls="content-panel" aria-selected={tab === 'content'} className={tab === 'content' ? 'active' : ''} onClick={() => setTab('content')}><ListChecks size={16}/> Resume content</button>
+          <button role="tab" id="matcher-tab" aria-controls="matcher-panel" aria-selected={tab === 'matcher'} className={tab === 'matcher' ? 'active' : ''} onClick={() => setTab('matcher')}><ScanSearch size={16}/> JD Matcher</button>
+        </div>
+        {tab === 'matcher' ? <Matcher data={data} resume={doc} include={(source) => {
+          if (source.kind === 'bullet') update(toggleBullet(config, source.itemId, source.id, true))
+          if (source.kind === 'skill') update(toggleSkill(config, source.categoryId, source.id, true))
+          if (source.kind === 'item') update(toggleItem(config, source.id, true))
+        }}/> : <div role="tabpanel" id="content-panel" aria-labelledby="content-tab">
         <div className="structure-header"><h3>Sections</h3><span className="muted">{doc.sections.length} included</span></div>
         <SortableList rows={config.section_order.map((id) => ({ id }))} reorder={(ordered) => update({ ...config, section_order: ordered.map(({ id }) => id) })}>
         {({ id: key }, grip) => {
@@ -174,6 +186,7 @@ function VariantWorkspace({ variant, data }: { variant: Variant; data: Data }) {
             </div>}
           </div>
         }}</SortableList>
+        </div>}
       </section>
     </div>
     <Preview resume={doc} controls={{ config, update }}/>

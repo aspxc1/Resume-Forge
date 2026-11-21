@@ -1,0 +1,332 @@
+C++|cpp|cxx|c++11|c++14|c++17|c++20|c++23|c++26
+C#|csharp|c sharp
+C
+Embedded C
+Python|python3
+TypeScript
+JavaScript|ecmascript|js
+Rust
+Go|golang
+Java
+Kotlin
+Swift
+Ruby
+PHP
+Scala
+Julia
+R Language|r programming|rstats
+MATLAB
+Assembly|assembly language
+Bash|bash scripting
+PowerShell
+Zsh
+Perl
+Lua
+Dart
+Elixir
+Erlang
+Haskell
+OCaml
+Zig
+Objective-C|objective c
+SQL
+HTML|html5
+CSS|css3
+Sass|scss
+WebAssembly|wasm
+JSON
+YAML|yml
+XML
+TOML
+Regular Expressions|regex
+React|react.js|reactjs
+React Native
+Next.js|nextjs
+Vue|vue.js|vuejs
+Nuxt|nuxt.js|nuxtjs
+Angular|angularjs
+Svelte|sveltekit
+SolidJS|solid.js
+Tailwind CSS|tailwind
+Bootstrap
+Vite
+Webpack
+Babel
+Redux|redux toolkit
+Zustand
+Node.js|nodejs|node js
+Deno
+Express|express.js|expressjs
+NestJS|nest.js
+Fastify
+Django
+Flask
+FastAPI|fast api
+Spring Boot|springboot
+Spring Framework
+Ruby on Rails|rails framework
+ASP.NET|asp net
+.NET|dotnet|.net core
+GraphQL
+gRPC
+REST|restful|rest api
+WebSockets|websocket
+OpenAPI|swagger
+Protocol Buffers|protobuf|proto3
+OAuth|oauth2|oauth 2.0
+JWT|json web token
+HTTP|http/1.1|http/2|http/3|https
+TCP/IP|tcp ip|tcp
+UDP
+TLS|ssl/tls
+DNS
+DHCP
+QUIC
+MQTT
+Linux|gnu/linux
+Unix
+Windows
+Ubuntu
+Debian
+FreeBSD
+POSIX
+ELF
+System Calls|syscalls
+Linux Kernel|kernel development
+Device Drivers|device driver
+Operating Systems|operating system
+Distributed Systems|distributed computing
+Concurrency|concurrent programming
+Multithreading|multi-threading|multithreaded
+Parallel Computing|parallel programming
+Asynchronous Programming|async programming|async/await
+Lock-Free|lock free|lockless
+SIMD|single instruction multiple data
+AVX|avx2|avx-512
+SSE|sse2|sse4
+Memory Management
+Virtual Memory
+Cache Coherence|cache coherency
+Compiler Design|compilers
+LLVM
+Clang
+GCC
+GDB
+Valgrind
+CMake
+Makefiles|makefile|gnu make
+Bazel
+Ninja Build|ninja build system
+Cargo|cargo.toml
+Git|version control
+GitHub Actions|github action
+GitLab CI|gitlab pipelines
+CI/CD|ci cd|ci-cd|cicd|continuous integration|continuous delivery|continuous deployment
+Jenkins
+CircleCI
+GitHub
+GitLab
+Azure DevOps
+Docker|docker compose
+Kubernetes|k8s
+Helm|helm charts
+OpenShift
+Podman
+Containerization|containers
+Terraform|opentofu
+Pulumi
+Ansible
+Infrastructure as Code|iac
+AWS|amazon web services
+Amazon EC2|ec2
+Amazon S3|s3
+Amazon EKS|eks
+Amazon ECS|ecs
+AWS Lambda|lambda functions
+CloudFormation
+CloudWatch
+DynamoDB
+AWS IAM|identity and access management
+Azure|microsoft azure
+GCP|google cloud|google cloud platform
+Cloud Run
+BigQuery
+Firebase
+Virtualization|virtual machines
+Hypervisor|hypervisors
+QEMU
+KVM
+VMware
+Observability
+OpenTelemetry|otel
+Prometheus
+Grafana
+Datadog
+Elastic Stack|elk stack
+Elasticsearch|opensearch
+Logging
+Monitoring
+SRE|site reliability engineering
+Microservices|microservice
+Serverless
+Event-Driven Architecture|event driven architecture
+Kafka|apache kafka
+RabbitMQ
+NATS
+Apache Spark|pyspark|spark
+Apache Flink|flink
+Apache Airflow|airflow
+dbt
+ETL|elt|extract transform load
+Data Engineering
+Data Modeling|data modelling
+Data Pipelines|data pipeline
+PostgreSQL|postgres|psql
+MySQL|mariadb
+SQLite|sqlite3
+Redis
+MongoDB|mongo
+Cassandra
+Snowflake
+SQL Server|mssql
+Oracle Database|oracle db
+NoSQL
+Vector Databases|vector database|vector db
+Pinecone
+Weaviate
+Milvus
+FAISS
+ChromaDB|chroma db
+Database Indexing|database indexes
+Transactions|acid transactions
+Query Optimization|query optimisation
+PyTorch|torch
+TensorFlow|tensorflow serving
+Keras
+JAX
+NumPy
+Pandas
+SciPy
+Scikit-learn|sklearn|scikit learn
+XGBoost
+LightGBM
+OpenCV
+Pillow
+Matplotlib
+Seaborn
+Jupyter|jupyter notebooks
+Hugging Face|huggingface
+ONNX|onnx runtime
+TensorRT
+CUDA|nvidia cuda
+cuDNN
+OpenCL
+GPU Programming|gpu computing
+PyCUDA
+Triton|triton inference server
+Machine Learning|ml
+Deep Learning
+Computer Vision|cv systems
+Natural Language Processing|nlp
+LLM|llms|large language model|large language models
+RAG|retrieval augmented generation|retrieval-augmented generation
+Transformers|transformer models
+Embeddings|vector embeddings
+Generative AI|genai|generative artificial intelligence
+Prompt Engineering
+Fine-Tuning|fine tuning|finetuning
+LoRA|low-rank adaptation
+Reinforcement Learning
+Supervised Learning
+Unsupervised Learning
+Transfer Learning
+Neural Networks|neural network
+CNN|cnns|convolutional neural network
+RNN|rnns|recurrent neural network
+LSTM|long short-term memory
+Object Detection
+Image Segmentation
+Feature Engineering
+Model Evaluation
+Hyperparameter Tuning|hyperparameter optimization
+A/B Testing|ab testing
+Quantization|quantisation
+Model Deployment|model serving
+MLOps|ml ops
+MLflow
+Weights & Biases|wandb
+DVC|data version control
+Kubeflow
+LangChain
+LlamaIndex|llama index
+RTOS|real-time operating system|real time operating system
+FreeRTOS
+Zephyr|zephyr rtos
+Embedded Linux
+Yocto|yocto project
+Buildroot
+Bare Metal|bare-metal
+Firmware
+Bootloader|bootloaders
+Microcontrollers|microcontroller|mcu
+FPGA|fpgas|field programmable gate array
+Verilog
+SystemVerilog|system verilog
+VHDL
+RTL|register transfer level
+UVM|universal verification methodology
+ASIC|asics
+Vivado|xilinx vivado
+Quartus|intel quartus
+ARM Cortex|cortex-m|cortex-a
+RISC-V|riscv
+x86|x86-64|amd64
+STM32|stm32f4|stm32h7
+Arduino
+ESP32|esp-idf
+Raspberry Pi|raspberrypi
+CAN Bus|controller area network
+I2C|i²c
+SPI
+UART|usart
+DMA|direct memory access
+GPIO
+PWM|pulse width modulation
+JTAG|swd
+PCB Design|printed circuit board design
+KiCad
+Altium|altium designer
+Oscilloscope|oscilloscopes
+Logic Analyzer|logic analyser
+Digital Signal Processing|dsp
+Computer Architecture
+Digital Logic
+Control Systems
+ROS|ros2|robot operating system
+SLAM
+Sensor Fusion
+Unit Testing|unit tests
+Integration Testing|integration tests
+End-to-End Testing|e2e testing
+Test-Driven Development|tdd
+Jest
+Vitest
+Playwright
+Cypress
+pytest
+JUnit
+Selenium
+Google Test|gtest
+Property-Based Testing
+Fuzz Testing|fuzzing
+Static Analysis|static code analysis
+Code Review|code reviews
+Agile|scrum
+Data Structures
+Algorithms
+Object-Oriented Programming|oop
+Functional Programming
+Accessibility|a11y
+WCAG
+Open Source|open-source
+SOLID Principles|solid design principles

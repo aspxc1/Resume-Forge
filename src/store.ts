@@ -28,6 +28,10 @@ interface Store {
   data: Data
   loaded: boolean
   view: View
+  variantId: string
+  job: { text: string; applicationId?: string }
+  setVariantId: (id: string) => void
+  setJob: (job: Store["job"]) => void
   error: string
   notice: string
   noticePath?: string
@@ -58,7 +62,9 @@ export const useStore = create<Store>((set) => {
     return next
   }
   return {
-    data: emptyData, loaded: false, view: 'studio', error: '', notice: '',
+    data: emptyData, loaded: false, view: 'studio', variantId: '', job: { text: '' }, error: '', notice: '',
+    setJob: (job) => set({ job }),
+    setVariantId: (variantId) => set({ variantId }),
     setView: (view) => set({ view }),
     setNotice: (notice, noticePath) => set({ notice, noticePath }),
     setError: (error) => set({ error }),
