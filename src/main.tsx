@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BarChart3, BriefcaseBusiness, Check, CircleHelp, Database, FileText, FolderOpen, Layers3, Settings, X } from 'lucide-react'
+import { Applications } from './Applications'
+import { Analytics } from './Analytics'
 import { Bank } from './Bank'
 import { Studio } from './Studio'
 import { Settings as SettingsView } from './Settings'
@@ -20,8 +22,8 @@ function WorkspaceView({ view }: { view: View }) {
   if (view === 'bank') return <Bank/>
   if (view === 'studio') return <Studio/>
   if (view === 'settings') return <SettingsView/>
-  const label = links.find((link) => link.view === view)?.label
-  return <div className="view"><header className="page-heading"><h1>{label}</h1></header></div>
+  if (view === 'applications') return <Applications/>
+  return <Analytics/>
 }
 
 function App() {

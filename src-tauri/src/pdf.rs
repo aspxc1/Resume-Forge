@@ -182,7 +182,8 @@ fn run_renderer(command: &mut Command, log: &Path, timeout: Duration) -> Result<
     #[cfg(windows)]
     {
         use std::os::windows::process::CommandExt;
-        command.creation_flags(0x08000000);
+        use windows_sys::Win32::System::Threading::{CREATE_NO_WINDOW, CREATE_SUSPENDED};
+        command.creation_flags(CREATE_NO_WINDOW | CREATE_SUSPENDED);
     }
     #[cfg(unix)]
     {
@@ -193,6 +194,14 @@ fn run_renderer(command: &mut Command, log: &Path, timeout: Duration) -> Result<
         .spawn()
         .map_err(|e| format!("Could not launch the PDF renderer: {e}"))?;
     let tree = ProcessTree::attach(&mut child)?;
+    #[cfg(windows)]
+    if let Err(error) = resume_renderer(child.id()) {
+        drop(tree);
+        let _ = child.wait();
+        return Err(format!(
+            "Could not start the supervised PDF renderer: {error}"
+        ));
+    }
     let start = Instant::now();
     loop {
         match child.try_wait() {
@@ -283,15 +292,89 @@ impl ProcessTree {
     }
 }
 #[cfg(windows)]
+fn resume_renderer(pid: u32) -> std::io::Result<()> {
+    use std::os::windows::io::{FromRawHandle, OwnedHandle};
+    use windows_sys::Win32::{
+        Foundation::INVALID_HANDLE_VALUE,
+        System::{
+            Diagnostics::ToolHelp::{
+                CreateToolhelp32Snapshot, Thread32First, Thread32Next, TH32CS_SNAPTHREAD,
+                THREADENTRY32,
+            },
+            Threading::{OpenThread, ResumeThread, THREAD_SUSPEND_RESUME},
+        },
+    };
+    unsafe {
+        // A CREATE_SUSPENDED process has one primary thread. It cannot create
+        // renderer children until the process has been assigned to our job.
+        let snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+        if snapshot == INVALID_HANDLE_VALUE {
+            return Err(std::io::Error::last_os_error());
+        }
+        let _snapshot = OwnedHandle::from_raw_handle(snapshot);
+        let mut entry = THREADENTRY32 {
+            dwSize: std::mem::size_of::<THREADENTRY32>() as u32,
+            ..Default::default()
+        };
+        let mut found = Thread32First(snapshot, &mut entry);
+        while found != 0 {
+            if entry.th32OwnerProcessID == pid {
+                let thread = OpenThread(THREAD_SUSPEND_RESUME, 0, entry.th32ThreadID);
+                if thread.is_null() {
+                    return Err(std::io::Error::last_os_error());
+                }
+                let _thread = OwnedHandle::from_raw_handle(thread);
+                return if ResumeThread(thread) == u32::MAX {
+                    Err(std::io::Error::last_os_error())
+                } else {
+                    Ok(())
+                };
+            }
+            found = Thread32Next(snapshot, &mut entry);
+        }
+        Err(std::io::Error::other(
+            "The renderer primary thread could not be found",
+        ))
+    }
+}
+
+#[cfg(windows)]
 impl Drop for ProcessTree {
     fn drop(&mut self) {
+        use windows_sys::Win32::{Foundation::CloseHandle, System::JobObjects::*};
         unsafe {
-            windows_sys::Win32::Foundation::CloseHandle(self.0);
+            if TerminateJobObject(self.0, 1) != 0 {
+                let start = Instant::now();
+                let mut info = JOBOBJECT_BASIC_ACCOUNTING_INFORMATION::default();
+                while start.elapsed() < Duration::from_secs(2) {
+                    if QueryInformationJobObject(
+                        self.0,
+                        JobObjectBasicAccountingInformation,
+                        (&mut info as *mut JOBOBJECT_BASIC_ACCOUNTING_INFORMATION).cast(),
+                        std::mem::size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32,
+                        std::ptr::null_mut(),
+                    ) == 0
+                        || info.ActiveProcesses == 0
+                    {
+                        break;
+                    }
+                    std::thread::sleep(Duration::from_millis(20));
+                }
+            }
+            CloseHandle(self.0);
         }
     }
 }
 
 pub fn write_file(path: &Path, bytes: &[u8]) -> Result<(), String> {
+    write_atomic(path, bytes, true)
+}
+
+pub fn write_new_file(path: &Path, bytes: &[u8]) -> Result<(), String> {
+    write_atomic(path, bytes, false)
+}
+
+fn write_atomic(path: &Path, bytes: &[u8], replace: bool) -> Result<(), String> {
     let parent = path
         .parent()
         .filter(|path| !path.as_os_str().is_empty())
@@ -300,7 +383,12 @@ pub fn write_file(path: &Path, bytes: &[u8]) -> Result<(), String> {
     temp.write_all(bytes)
         .and_then(|_| temp.as_file().sync_all())
         .map_err(|e| e.to_string())?;
-    temp.persist(path).map_err(|e| e.error.to_string())?;
+    if replace {
+        temp.persist(path)
+    } else {
+        temp.persist_noclobber(path)
+    }
+    .map_err(|e| e.error.to_string())?;
     Ok(())
 }
 

@@ -1,8 +1,10 @@
+import { createPortal } from 'react-dom'
 import { useEffect, useRef, type ReactNode } from 'react'
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, X } from 'lucide-react'
+import { useStore } from './store'
 import { tracks, type Track } from './model'
 
 export function SortableList<T extends { id: string }>({ rows, reorder, children }: {
@@ -35,13 +37,18 @@ export function TrackPicker({ selected, change }: { selected: Track[]; change: (
   )}</div>
 }
 
-export function Modal({ title, close, children, wide = false }: { title: string; close: () => void; children: ReactNode; wide?: boolean }) {
+export function Modal({ title, close, children, wide = false, drawer = false }: { title: string; close: () => void; children: ReactNode; wide?: boolean; drawer?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null)
+  const error = useStore((s) => s.error)
+  const setError = useStore((s) => s.setError)
   useEffect(() => {
     ref.current?.showModal()
   }, [])
-  return <dialog ref={ref} className={wide ? 'modal wide' : 'modal'} aria-label={title} onCancel={(e) => { e.preventDefault(); close() }}>
+  return createPortal(<dialog ref={ref} className={drawer ? 'modal drawer' : wide ? 'modal wide' : 'modal'} aria-label={title} onCancel={(e) => { e.preventDefault(); e.stopPropagation(); close() }}>
     <div className="modal-header"><h2>{title}</h2><button className="icon-button" title="Close" aria-label="Close" onClick={close}><X size={18}/></button></div>
-    <div className="modal-content">{children}</div>
-  </dialog>
+    <div className="modal-content">
+      {error && <div className="modal-error" role="alert"><span>{error}</span><button className="icon-button" aria-label="Dismiss error" onClick={() => setError('')}><X size={16}/></button></div>}
+      {children}
+    </div>
+  </dialog>, document.body)
 }

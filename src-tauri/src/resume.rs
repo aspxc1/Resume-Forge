@@ -108,3 +108,53 @@ pub struct SkillCategory {
 pub struct Skill {
     pub name: String,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all = "lowercase")]
+enum SectionKey {
+    Education,
+    Experience,
+    Projects,
+    Leadership,
+    Publications,
+    Skills,
+}
+
+#[derive(Deserialize)]
+struct VariantConfig {
+    #[serde(rename = "page_size")]
+    _page_size: PageSize,
+    #[serde(rename = "section_order")]
+    _section_order: Vec<SectionKey>,
+    #[serde(rename = "section_titles")]
+    _section_titles: std::collections::HashMap<String, String>,
+    #[serde(rename = "selected_items")]
+    _selected_items: Vec<ItemSelection>,
+    #[serde(rename = "selected_skills")]
+    _selected_skills: Vec<SkillSelection>,
+    #[serde(rename = "profile_override")]
+    _profile_override: Option<Profile>,
+    layout: Layout,
+}
+
+#[derive(Deserialize)]
+struct ItemSelection {
+    #[serde(rename = "item_id")]
+    _item_id: String,
+    #[serde(rename = "bullet_ids")]
+    _bullet_ids: Vec<String>,
+}
+
+#[derive(Deserialize)]
+struct SkillSelection {
+    #[serde(rename = "category_id")]
+    _category_id: String,
+    #[serde(rename = "skill_ids")]
+    _skill_ids: Vec<String>,
+}
+
+pub(crate) fn validate_variant(value: serde_json::Value) -> Result<(), String> {
+    let config: VariantConfig =
+        serde_json::from_value(value).map_err(|e| format!("Invalid variant configuration: {e}"))?;
+    config.layout.validate()
+}

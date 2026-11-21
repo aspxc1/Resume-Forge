@@ -14,8 +14,22 @@ pub fn seed(conn: &mut Connection) -> Result<(), String> {
             .map_err(|e| e.to_string())?;
         for table in Table::ALL {
             if let Some(rows) = sample[table.name()].as_array() {
-                for row in rows {
-                    save(&tx, table, row)?;
+                for (index, row) in rows.iter().enumerate() {
+                    let mut row = row.clone();
+                    if matches!(table, Table::Application) {
+                        let today = chrono::Local::now().date_naive();
+                        row["sort_order"] = json!(index);
+                        if index > 0 {
+                            row["applied_date"] = json!((today
+                                - chrono::Duration::days(index as i64 * 3))
+                            .to_string());
+                        }
+                        if row["stage"] == "oa" {
+                            row["oa_deadline"] =
+                                json!((today + chrono::Duration::days(2)).to_string());
+                        }
+                    }
+                    save(&tx, table, &row)?;
                 }
             }
         }

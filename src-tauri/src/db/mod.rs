@@ -3,7 +3,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use std::{path::Path, time::Duration};
 
+pub mod portability;
 mod sample;
+pub mod snapshots;
 pub use sample::seed;
 
 #[derive(Clone, Copy, Serialize, Deserialize)]
@@ -17,11 +19,12 @@ pub enum Table {
     Variant,
     Snapshot,
     Application,
+    ApplicationEvent,
     Setting,
 }
 
 impl Table {
-    pub const ALL: [Self; 9] = [
+    pub const ALL: [Self; 10] = [
         Self::Profile,
         Self::Item,
         Self::Bullet,
@@ -30,6 +33,7 @@ impl Table {
         Self::Variant,
         Self::Snapshot,
         Self::Application,
+        Self::ApplicationEvent,
         Self::Setting,
     ];
 
@@ -43,6 +47,7 @@ impl Table {
             Self::Variant => "resume_variants",
             Self::Snapshot => "resume_snapshots",
             Self::Application => "applications",
+            Self::ApplicationEvent => "application_stage_events",
             Self::Setting => "settings",
         }
     }
@@ -56,7 +61,8 @@ impl Table {
             Self::Skill => "id category_id name tracks_json sort_order",
             Self::Variant => "id name track config_json created_at updated_at",
             Self::Snapshot => "id source_variant_id variant_name track frozen_data_json tex_source pdf_path created_at",
-            Self::Application => "id company role track stage location compensation job_url job_description applied_date oa_deadline oa_platform referral notes snapshot_id created_at updated_at",
+            Self::Application => "id company role track stage location compensation job_url job_description applied_date oa_deadline oa_platform referral notes snapshot_id created_at updated_at sort_order",
+            Self::ApplicationEvent => "id application_id stage created_at",
             Self::Setting => "key value",
         }
     }
@@ -72,7 +78,8 @@ impl Table {
     fn order(self) -> &'static str {
         match self {
             Self::Item | Self::Bullet | Self::Category | Self::Skill => "sort_order, id",
-            Self::Variant | Self::Snapshot | Self::Application => "created_at DESC, id",
+            Self::Variant | Self::Snapshot | Self::ApplicationEvent => "created_at DESC, id",
+            Self::Application => "sort_order, created_at DESC, id",
             Self::Setting => "key",
             Self::Profile => "id",
         }
@@ -94,7 +101,11 @@ pub fn migrate(mut conn: Connection) -> rusqlite::Result<Connection> {
     if version == 0 {
         tx.execute_batch(include_str!("schema.sql"))?;
         tx.pragma_update(None, "user_version", 1)?;
-    } else if version > 1 {
+    }
+    if version < 2 {
+        tx.execute_batch(include_str!("stage-history.sql"))?;
+        tx.pragma_update(None, "user_version", 2)?;
+    } else if version > 2 {
         return Err(rusqlite::Error::InvalidQuery);
     }
     tx.commit()?;
@@ -106,16 +117,28 @@ pub fn now() -> String {
 }
 
 pub fn read(conn: &Connection, table: Table) -> Result<Vec<Value>, String> {
+    read_rows(conn, table, None)
+}
+
+pub(crate) fn read_id(conn: &Connection, table: Table, id: &str) -> Result<Option<Value>, String> {
+    Ok(read_rows(conn, table, Some(id))?.into_iter().next())
+}
+
+fn read_rows(conn: &Connection, table: Table, id: Option<&str>) -> Result<Vec<Value>, String> {
     let fields: Vec<_> = table.fields().split_whitespace().collect();
+    let filter = id.map_or(String::new(), |_| format!(" WHERE {} = ?", table.key()));
     let sql = format!(
-        "SELECT {} FROM {} ORDER BY {}",
+        "SELECT {} FROM {}{} ORDER BY {}",
         fields.join(","),
         table.name(),
+        filter,
         table.order()
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let mut result = Vec::new();
-    let mut rows = stmt.query([]).map_err(|e| e.to_string())?;
+    let mut rows = stmt
+        .query(params_from_iter(id))
+        .map_err(|e| e.to_string())?;
     while let Some(row) = rows.next().map_err(|e| e.to_string())? {
         let mut object = Map::new();
         for (index, field) in fields.iter().enumerate() {
@@ -167,6 +190,19 @@ pub(crate) fn write_row(
     }
     let fields: Vec<_> = table.fields().split_whitespace().collect();
     if !preserve {
+        if matches!(table, Table::Application)
+            && data.get("applied_date").is_none_or(Value::is_null)
+            && matches!(
+                data.get("stage").and_then(Value::as_str),
+                Some("applied" | "oa" | "technical" | "final" | "offer")
+            )
+        {
+            let prior = read_id(conn, Table::Application, data[key].as_str().unwrap())?;
+            let date = prior
+                .and_then(|row| row["applied_date"].as_str().map(str::to_owned))
+                .unwrap_or_else(|| chrono::Local::now().date_naive().to_string());
+            data.insert("applied_date".into(), Value::from(date));
+        }
         if fields.contains(&"updated_at") {
             data.insert("updated_at".into(), Value::from(now()));
         }
@@ -175,6 +211,22 @@ pub(crate) fn write_row(
         }
     }
 
+    if matches!(table, Table::Variant) {
+        if let Some(config) = data.get("config_json") {
+            crate::resume::validate_variant(config.clone())?;
+        }
+    }
+    for key in ["tags_json", "tracks_json"] {
+        if let Some(tags) = data.get(key) {
+            let accepted = ["SWE", "AI/ML", "Systems", "Embedded", "General"];
+            if !tags.as_array().is_some_and(|tags| {
+                tags.iter()
+                    .all(|tag| tag.as_str().is_some_and(|tag| accepted.contains(&tag)))
+            }) {
+                return Err("Invalid resume track tags".into());
+            }
+        }
+    }
     let mut columns = Vec::new();
     let mut values = Vec::new();
     for field in fields {
@@ -215,7 +267,10 @@ pub(crate) fn write_row(
 }
 
 pub fn delete(conn: &Connection, table: Table, id: &str) -> Result<(), String> {
-    if matches!(table, Table::Profile | Table::Snapshot) {
+    if matches!(
+        table,
+        Table::Profile | Table::Snapshot | Table::ApplicationEvent
+    ) {
         return Err("This record cannot be deleted".into());
     }
     conn.execute(

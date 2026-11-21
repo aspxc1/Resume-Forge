@@ -22,7 +22,7 @@ export function buildResume(data: Data, config: VariantConfig): ResumeDocument {
     return category && entries.length ? [{ ...category, skills: entries }] : []
   })
   return {
-    profile: data.profile[0] ?? emptyProfile, page_size: config.page_size, layout: config.layout,
+    profile: config.profile_override ?? data.profile[0] ?? emptyProfile, page_size: config.page_size, layout: config.layout,
     sections: config.section_order.map((key) => ({
       key, title: config.section_titles[key]?.trim() || sectionNames[key],
       items: selected.filter((item) => item.section === key), skills: key === 'skills' ? skills : [],

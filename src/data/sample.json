@@ -625,7 +625,13 @@
       "oa_deadline": null,
       "oa_platform": "",
       "created_at": "",
-      "updated_at": ""
+      "updated_at": "",
+      "compensation": "",
+      "job_url": "",
+      "referral": "",
+      "notes": "",
+      "snapshot_id": null,
+      "sort_order": 0
     },
     {
       "id": "app-1",
@@ -635,11 +641,17 @@
       "stage": "applied",
       "location": "Austin, TX",
       "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
-      "applied_date": "2026-11-18",
+      "applied_date": null,
       "oa_deadline": null,
       "oa_platform": "",
       "created_at": "",
-      "updated_at": ""
+      "updated_at": "",
+      "compensation": "",
+      "job_url": "",
+      "referral": "",
+      "notes": "",
+      "snapshot_id": null,
+      "sort_order": 1
     },
     {
       "id": "app-2",
@@ -649,11 +661,17 @@
       "stage": "oa",
       "location": "Austin, TX",
       "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
-      "applied_date": "2026-11-15",
-      "oa_deadline": "2026-11-23",
+      "applied_date": null,
+      "oa_deadline": null,
       "oa_platform": "CodeSignal",
       "created_at": "",
-      "updated_at": ""
+      "updated_at": "",
+      "compensation": "",
+      "job_url": "",
+      "referral": "",
+      "notes": "",
+      "snapshot_id": null,
+      "sort_order": 2
     },
     {
       "id": "app-3",
@@ -663,11 +681,17 @@
       "stage": "technical",
       "location": "Austin, TX",
       "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
-      "applied_date": "2026-11-12",
+      "applied_date": null,
       "oa_deadline": null,
       "oa_platform": "",
       "created_at": "",
-      "updated_at": ""
+      "updated_at": "",
+      "compensation": "",
+      "job_url": "",
+      "referral": "",
+      "notes": "",
+      "snapshot_id": null,
+      "sort_order": 3
     },
     {
       "id": "app-4",
@@ -677,11 +701,17 @@
       "stage": "offer",
       "location": "Austin, TX",
       "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
-      "applied_date": "2026-11-09",
+      "applied_date": null,
       "oa_deadline": null,
       "oa_platform": "",
       "created_at": "",
-      "updated_at": ""
+      "updated_at": "",
+      "compensation": "",
+      "job_url": "",
+      "referral": "",
+      "notes": "",
+      "snapshot_id": null,
+      "sort_order": 4
     }
   ]
 }

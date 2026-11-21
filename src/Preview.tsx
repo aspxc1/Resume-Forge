@@ -18,19 +18,25 @@ export function Preview({ resume, controls, children }: {
   resume: ResumeDocument; controls?: { config: VariantConfig; update: (config: VariantConfig) => void }; children?: ReactNode
 }) {
   const [zoom, setZoom] = useState('fit')
-  const [size, setSize] = useState({ viewport: 0, content: 0 })
+  const [size, setSize] = useState({ width: 0, maxHeight: 0, content: 0 })
   const viewport = useRef<HTMLDivElement>(null)
   const content = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
     const box = viewport.current
     const body = content.current
     if (!box || !body) return
-    const measure = () => setSize({ viewport: box.clientWidth, content: body.offsetHeight })
-    const observer = new ResizeObserver(measure)
+    let unscaledHeight = body.offsetHeight
+    const measure = () => setSize({ width: box.clientWidth, maxHeight: Math.max(216, window.innerHeight - 205), content: unscaledHeight })
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries.find(({ target }) => target === body)
+      if (entry) unscaledHeight = entry.contentRect.height
+      measure()
+    })
     observer.observe(box)
     observer.observe(body)
+    window.addEventListener('resize', measure)
     measure()
-    return () => observer.disconnect()
+    return () => { observer.disconnect(); window.removeEventListener('resize', measure) }
   }, [])
   const page = dimensions[resume.page_size]
   const margin = resume.layout.margin_y_in * 96
@@ -38,7 +44,7 @@ export function Preview({ resume, controls, children }: {
   const fill = size.content / available
   const overflow = size.content > available + .5
   const lines = Math.ceil((size.content - available) / (resume.layout.font_size_pt * (96 / 72) * resume.layout.line_height))
-  const scale = zoom === 'fit' ? Math.min(1, Math.max(.12, (size.viewport - 38) / page.width)) : Number(zoom)
+  const scale = zoom === 'fit' ? Math.min(1, Math.max(.12, Math.min((size.width - 38) / page.width, (size.maxHeight - 34) / page.height))) : Number(zoom)
   const height = Math.max(page.height, size.content + 2 * margin)
   return <section className="panel preview" aria-label="Resume preview">
     <div className="preview-toolbar">

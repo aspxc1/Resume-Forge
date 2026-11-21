@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { BookOpen, BriefcaseBusiness, ChevronDown, CircleCheck, Code2, Copy, Download, FileText, FolderGit2, GraduationCap, Layers3, ListChecks, Pencil, Plus, ScanSearch, Sparkles, Trash2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { BookOpen, BriefcaseBusiness, ChevronDown, CircleCheck, Code2, Copy, Download, FileLock, FileText, FolderGit2, GraduationCap, Layers3, ListChecks, Pencil, Plus, ScanSearch, Sparkles, Trash2 } from 'lucide-react'
 import { exportResume } from './exports'
+import { FreezeApplication } from './Applications'
 import { ItemEditor } from './Bank'
 import sample from './data/sample.json'
 import { emptyData, roleTracks, sectionNames, type Data, type Item, type SectionKey, type Variant, type VariantConfig, type VariantTrack } from './model'
@@ -27,7 +28,9 @@ export function Studio() {
   const [dialog, setDialog] = useState<'create' | 'clone' | 'rename' | 'delete'>()
   const variant = data.resume_variants.find((item) => item.id === variantId) ?? data.resume_variants[0]
   const remove = useStore((s) => s.remove)
-  const onboarding = !variant && !data.settings.some(({ key }) => key === 'onboarded') && !data.master_items.length && !data.profile[0]?.full_name
+  const hasProfile = data.profile.some((profile) => Object.entries(profile).some(([key, value]) => key !== 'id' && value))
+  const onboarding = !variant && !data.settings.some(({ key }) => key === 'onboarded')
+    && !hasProfile && !data.master_items.length && !data.skill_categories.length && !data.applications.length && !data.resume_snapshots.length
   const demo = sampleData.resume_variants[0]
   return <div className="view studio-view">
     <header className="page-heading studio-heading"><div><h1>Variant Studio</h1><p>Tailor your resume for each application.</p></div>{variant && <ExportActions variant={variant} data={data}/>}</header>
@@ -80,14 +83,21 @@ export function Studio() {
 
 function ExportActions({ variant, data }: { variant: Variant; data: Data }) {
   const [exporting, setExporting] = useState(false)
+  const [freezing, setFreezing] = useState(false)
+  const jobId = useStore((s) => s.job.applicationId)
+  const linked = data.applications.find((app) => app.id === jobId)
+  const writing = useStore((s) => s.writing)
+  const resume = buildResume(data, variant.config_json)
   const run = async (format: 'pdf' | 'tex') => {
     setExporting(true)
-    try { await exportResume(format, buildResume(data, variant.config_json), variant.name) }
+    try { await exportResume(format, resume, variant.name, linked?.company, linked?.role) }
     finally { setExporting(false) }
   }
   return <div className="heading-actions">
-    <button className="button" disabled={exporting} onClick={() => void run('tex')}><Code2 size={15}/> Export .tex</button>
-    <button className="button primary" disabled={exporting} onClick={() => void run('pdf')}><Download size={15}/> Export PDF</button>
+    <button className="button" disabled={exporting || writing > 0} onClick={() => void run('tex')}><Code2 size={15}/> Export .tex</button>
+    <button className="button primary" disabled={exporting || writing > 0} onClick={() => void run('pdf')}><Download size={15}/> Export PDF</button>
+    <button className="button" disabled={exporting || writing > 0} onClick={() => setFreezing(true)}><FileLock size={15}/> Log Application &amp; Freeze Snapshot</button>
+    {freezing && <FreezeApplication data={data} variant={variant} resume={resume} close={() => setFreezing(false)}/>}
   </div>
 }
 
@@ -121,9 +131,14 @@ function VariantWorkspace({ variant, data }: { variant: Variant; data: Data }) {
   const [naming, setNaming] = useState<SectionKey>()
   const save = useStore((s) => s.save)
   const setView = useStore((s) => s.setView)
-  const update = (next: VariantConfig, track = variant.track) => {
+  const trackRef = useRef(variant.track)
+  useEffect(() => { trackRef.current = variant.track }, [variant.track])
+  const revision = useRef(0)
+  const update = (next: VariantConfig, track = trackRef.current) => {
+    const savedRevision = ++revision.current
+    trackRef.current = track
     setConfig(next)
-    void save('variant', { ...variant, track, config_json: next }).then((ok) => { if (!ok) setConfig(useStore.getState().data.resume_variants.find((v) => v.id === variant.id)?.config_json ?? variant.config_json) })
+    void save('variant', { ...variant, track, config_json: next }).then((ok) => { if (!ok && savedRevision === revision.current) setConfig(useStore.getState().data.resume_variants.find((v) => v.id === variant.id)?.config_json ?? variant.config_json) })
   }
   const doc = buildResume(data, config)
   return <div className="studio-grid">
@@ -131,6 +146,10 @@ function VariantWorkspace({ variant, data }: { variant: Variant; data: Data }) {
       <section className="panel track-panel">
         <div className="track-heading"><Sparkles size={16}/><h2>Track auto-select</h2></div>
         <p className="muted">Select entries and alternate bullets for a role.</p>
+        {config.profile_override && <div className="snapshot-profile">
+          <span className="muted">Using the frozen profile.</span>
+          <button className="button" onClick={() => update({ ...config, profile_override: undefined })}>Use Master Bank profile</button>
+        </div>}
         <div className="track-actions">{roleTracks.map((track) => <button className={track === variant.track ? 'chip selected' : 'chip'} key={track} onClick={() => update(selectTrack(data, config, track), track)} aria-label={`Apply ${track} Track`}>{track}</button>)}</div>
       </section>
       <section className="panel structure-panel">
@@ -173,7 +192,7 @@ function VariantWorkspace({ variant, data }: { variant: Variant; data: Data }) {
                   <div className="structure-item-row">{itemGrip}
                     <label className="check-row"><input type="checkbox" checked={!!itemSelection} onChange={(e) => update(toggleItem(config, item.id, e.target.checked, bullets.map((bullet) => bullet.id)))}/><span>{item.title}<small>{item.subtitle}</small></span></label>
                     <button className="icon-button" aria-label={`Quick edit ${item.title}`} title="Quick edit" onClick={() => setEditing(item)}><Pencil size={13}/></button>
-                    {bullets.length > 0 && <button className="section-count" aria-expanded={bulletsOpen} aria-label={`Toggle bullets for ${item.title}`} onClick={() => setExpandedItems(bulletsOpen ? expandedItems.filter((id) => id !== item.id) : [...expandedItems, item.id])}>{itemSelection?.bullet_ids.length ?? 0}/{bullets.length}<ChevronDown size={12} className={bulletsOpen ? 'rotated' : ''}/></button>}
+                    {bullets.length > 0 && <button className="section-count" aria-expanded={bulletsOpen} aria-label={`Toggle bullets for ${item.title}`} onClick={() => setExpandedItems(bulletsOpen ? expandedItems.filter((id) => id !== item.id) : [...expandedItems, item.id])}>{bullets.filter((bullet) => itemSelection?.bullet_ids.includes(bullet.id)).length}/{bullets.length}<ChevronDown size={12} className={bulletsOpen ? 'rotated' : ''}/></button>}
                   </div>
                   {bulletsOpen && <div className="structure-bullets"><SortableList rows={bullets} reorder={(sorted) => {
                     if (itemSelection) update({ ...config, selected_items: config.selected_items.map((row) => row.item_id === item.id

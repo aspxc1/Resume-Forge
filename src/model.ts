@@ -55,6 +55,7 @@ export interface Layout {
 export interface ItemSelection { item_id: string; bullet_ids: string[] }
 export interface SkillSelection { category_id: string; skill_ids: string[] }
 export interface VariantConfig {
+  profile_override?: Profile
   page_size: 'letter' | 'a4'
   section_order: SectionKey[]
   section_titles: Partial<Record<SectionKey, string>>
@@ -86,7 +87,9 @@ export interface Snapshot {
   pdf_path: string | null
   created_at: string
 }
+export interface ApplicationEvent { id: string; application_id: string; stage: Stage; created_at: string }
 export interface Application {
+  sort_order: number
   id: string
   company: string
   role: string
@@ -115,6 +118,7 @@ export interface Data {
   resume_variants: Variant[]
   resume_snapshots: Snapshot[]
   applications: Application[]
+  application_stage_events: ApplicationEvent[]
   settings: Setting[]
 }
 export const emptyProfile: Profile = {
@@ -123,5 +127,5 @@ export const emptyProfile: Profile = {
 }
 export const emptyData: Data = {
   profile: [emptyProfile], master_items: [], master_bullets: [], skill_categories: [], master_skills: [],
-  resume_variants: [], resume_snapshots: [], applications: [], settings: [],
+  resume_variants: [], resume_snapshots: [], applications: [], application_stage_events: [], settings: [],
 }

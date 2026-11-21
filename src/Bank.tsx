@@ -84,18 +84,14 @@ export function ItemEditor({ item, bullets, close }: { item: Item; bullets: Bull
   const [entries, setEntries] = useState(bullets)
   const [busy, setBusy] = useState(false)
   const notice = useStore((s) => s.setNotice)
-  const save = useStore((s) => s.save)
-  const remove = useStore((s) => s.remove)
+  const saveEntry = useStore((s) => s.saveEntry)
   return <Modal title={item.title ? 'Edit resume entry' : 'Add resume entry'} close={close} wide>
     <form onSubmit={async (e) => {
       e.preventDefault()
       setBusy(true)
       try {
-        if (!await save('item', { ...draft, title: draft.title.trim() })) return
-        if (entries.length && !await save('bullet', ...entries.map((bullet, sort_order) => ({ ...bullet, sort_order })))) return
-        for (const bullet of bullets.filter((bullet) => !entries.some((entry) => entry.id === bullet.id))) {
-          if (!await remove('bullet', bullet.id)) return
-        }
+        if (!draft.title.trim()) return
+        if (!await saveEntry({ ...draft, title: draft.title.trim() }, entries.map((bullet, sort_order) => ({ ...bullet, sort_order })))) return
         notice('Resume entry saved')
         close()
       } finally { setBusy(false) }

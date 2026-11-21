@@ -1,0 +1,38 @@
+name: Windows build
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+          components: rustfmt
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      - run: cargo check --locked --manifest-path src-tauri/Cargo.toml --features desktop
+      - run: cargo test --locked --manifest-path src-tauri/Cargo.toml --features desktop
+      - name: Smoke-test Microsoft Edge PDF rendering
+        run: cargo test --locked --manifest-path src-tauri/Cargo.toml --test export_engines windows_builtin_renders_pdf -- --ignored
+      - name: Build Windows x64 NSIS installer
+        run: npm run tauri build -- --target x86_64-pc-windows-msvc
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ResumeForge-Windows-x64
+          path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+          if-no-files-found: error
