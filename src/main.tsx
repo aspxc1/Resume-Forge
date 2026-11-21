@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BarChart3, BriefcaseBusiness, Check, CircleHelp, Database, FileText, Layers3, Settings, X } from 'lucide-react'
-import { Bank, Onboarding } from './Bank'
+import { Bank } from './Bank'
+import { Studio } from './Studio'
 import { useStore, type View } from './store'
 import './styles.css'
 
@@ -14,12 +15,10 @@ const links = [
 ] as const
 
 function WorkspaceView({ view }: { view: View }) {
-  const data = useStore((s) => s.data)
   if (view === 'bank') return <Bank/>
+  if (view === 'studio') return <Studio/>
   const label = links.find((link) => link.view === view)?.label
-  return <div className="view"><header className="page-heading"><h1>{label}</h1></header>
-    {view === 'studio' && !data.settings.some((setting) => setting.key === 'onboarded') && <Onboarding/>}
-  </div>
+  return <div className="view"><header className="page-heading"><h1>{label}</h1></header></div>
 }
 
 function App() {

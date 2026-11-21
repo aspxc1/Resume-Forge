@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import { ChevronRight, Plus, Save, Trash2 } from 'lucide-react'
 import { lintBullet } from './linter'
 import { emptyProfile, sectionNames, sections, type Bullet, type Category, type Item, type Profile, type Section, type Skill } from './model'
@@ -156,20 +156,4 @@ function SkillsEditor({ confirm }: { confirm: Confirm }) {
       </form>
     </Modal>}
   </>
-}
-
-export function Onboarding({ children }: { children?: ReactNode }) {
-  const save = useStore((s) => s.save)
-  const seed = useStore((s) => s.seed)
-  const setView = useStore((s) => s.setView)
-  return <section className="panel welcome">
-    <div className="welcome-icon"><Plus size={26}/></div>
-    <h2>Build your first resume</h2>
-    <p>Load a sample Computer Engineering profile with projects, variants, and applications, or start with your own experience.</p>
-    <div className="flex flex-wrap justify-center gap-3">
-      <button className="button primary" onClick={() => void seed()}>Load Sample CE Student Profile</button>
-      <button className="button" onClick={async () => { if (await save('setting', { key: 'onboarded', value: 'true' })) setView('bank') }}>Start Blank</button>
-    </div>
-    {children}
-  </section>
 }

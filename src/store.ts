@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { invoke, isTauri } from '@tauri-apps/api/core'
+import sampleRows from './data/sample.json'
 import { emptyData, type Data } from './model'
 
 export type View = 'studio' | 'bank' | 'applications' | 'analytics' | 'settings'
@@ -64,12 +65,12 @@ export const useStore = create<Store>((set) => {
     refresh: (command, args) => update(() => invoke<Data>(command, args)),
     seed: () => update(async () => {
       if (native) return invoke<Data>('seed_demo')
-      const sample = (await import('./data/sample.json')).default as Data
+      const sample = structuredClone(sampleRows) as Partial<Data>
       const data = devData()
       if (data.profile.some((p) => Object.entries(p).some(([key, value]) => key !== 'id' && value))
         || data.master_items.length || data.skill_categories.length || data.resume_variants.length || data.applications.length) return data
       const now = new Date()
-      sample.applications = sample.applications.map((app, i) => ({
+      sample.applications = (sample.applications ?? []).map((app, i) => ({
         ...app, applied_date: i ? new Date(now.getTime() - i * 3 * 86400000).toISOString().slice(0, 10) : null,
         oa_deadline: app.stage === 'oa' ? new Date(now.getTime() + 2 * 86400000).toISOString().slice(0, 10) : null,
       }))

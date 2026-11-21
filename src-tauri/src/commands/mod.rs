@@ -3,6 +3,7 @@ use rusqlite::Connection;
 use serde_json::Value;
 use std::sync::Mutex;
 use tauri::{Manager, State};
+use tauri_plugin_opener::OpenerExt;
 
 struct Database(Mutex<Connection>);
 
@@ -41,6 +42,14 @@ fn seed_demo(database: State<'_, Database>) -> Result<Value, String> {
     db::state(&conn)
 }
 
+#[tauri::command]
+fn open_link(app: tauri::AppHandle, url: String) -> Result<(), String> {
+    if !["https://", "http://", "mailto:"].iter().any(|scheme| url.starts_with(scheme)) {
+        return Err("Only web and email links can be opened".into());
+    }
+    app.opener().open_url(url, None::<&str>).map_err(|e| e.to_string())
+}
+
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
@@ -51,7 +60,7 @@ pub fn run() {
             app.manage(Database(Mutex::new(connection)));
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![load_data, save_records, delete_record, seed_demo])
+        .invoke_handler(tauri::generate_handler![load_data, save_records, delete_record, seed_demo, open_link])
         .run(tauri::generate_context!())
         .expect("ResumeForge could not start");
 }

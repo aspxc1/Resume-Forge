@@ -1,0 +1,49 @@
+.resume-paper {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  min-height: var(--paper-height);
+  padding: var(--margin-y) var(--margin-x);
+  position: relative;
+  overflow-wrap: anywhere;
+  color: #000;
+  background: #fff;
+  font-family: "Latin Modern Roman", "Times New Roman", serif;
+  font-size: var(--base-size);
+  line-height: var(--resume-line);
+  text-align: left;
+  color-scheme: light;
+}
+.resume-paper * { box-sizing: border-box; }
+.resume-paper h1, .resume-paper h2, .resume-paper p, .resume-paper ul { margin: 0; }
+.resume-paper a { color: #000; text-decoration: underline; }
+.resume-paper .resume-content { display: flow-root; }
+.resume-paper .resume-header { text-align: center; }
+.resume-paper .resume-name { font-size: 2.39em; line-height: 1; font-weight: 700; font-variant: small-caps; letter-spacing: 0; }
+.resume-paper .resume-contact { font-size: .93em; margin-top: 4pt; }
+.resume-paper .resume-section { margin-top: var(--section-gap); }
+.resume-paper .resume-section-title {
+  font-size: 1.23em;
+  font-variant: small-caps;
+  font-weight: 400;
+  letter-spacing: .01em;
+  line-height: 1.04;
+  border-bottom: .75pt solid #000;
+  margin-bottom: 3pt;
+}
+.resume-paper .resume-entry { margin: 0 .11in; break-inside: avoid; }
+.resume-paper .resume-entry + .resume-entry { margin-top: var(--item-gap); }
+.resume-paper .resume-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10pt; }
+.resume-paper .resume-row > :last-child:not(:first-child) { text-align: right; flex: 0 1 auto; }
+.resume-paper .resume-secondary { font-size: .94em; font-style: italic; }
+.resume-paper .resume-extra { font-size: .93em; margin: 2pt 0 0 7pt; }
+.resume-paper .resume-bullets { padding: 0 0 0 15pt; margin-top: 2pt; list-style: disc outside; font-size: .94em; }
+.resume-paper .resume-bullets li + li { margin-top: var(--bullet-gap); }
+.resume-paper .resume-bullets li::marker { font-size: .85em; }
+.resume-paper .resume-skill { margin: 0 .11in; font-size: .94em; }
+.resume-paper .resume-skill + .resume-skill { margin-top: var(--bullet-gap); }
+.resume-paper .resume-cutoff { position: absolute; left: 0; right: 0; border-top: 1px dashed #e7002a; top: calc(var(--paper-height) - var(--margin-y)); pointer-events: none; }
+@media print {
+  html, body { margin: 0; padding: 0; background: #fff; }
+  .resume-paper { box-shadow: none; }
+  .resume-cutoff { display: none; }
+}
