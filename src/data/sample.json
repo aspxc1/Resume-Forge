@@ -1,0 +1,687 @@
+{
+  "profile": [
+    {
+      "id": 1,
+      "full_name": "Alex Morgan",
+      "phone": "(512) 555-0142",
+      "email": "alex.morgan@example.com",
+      "linkedin_url": "https://linkedin.com/in/alexmorgan",
+      "linkedin_display": "linkedin.com/in/alexmorgan",
+      "github_url": "https://github.com/alexmorgan",
+      "github_display": "github.com/alexmorgan",
+      "portfolio_url": "",
+      "portfolio_display": "",
+      "location": "Austin, TX"
+    }
+  ],
+  "master_items": [
+    {
+      "id": "edu",
+      "section": "education",
+      "title": "The University of Texas at Austin",
+      "subtitle": "B.S. in Computer Engineering, GPA: 3.82 / 4.00",
+      "location": "Austin, TX",
+      "date_range": "Aug. 2023 – May 2027",
+      "url": "",
+      "extra_line": "Relevant Coursework: Operating Systems, Computer Architecture, Machine Learning, Data Structures",
+      "tags_json": [
+        "General"
+      ],
+      "sort_order": 0,
+      "updated_at": ""
+    },
+    {
+      "id": "lab",
+      "section": "experience",
+      "title": "Undergraduate Research Assistant",
+      "subtitle": "Embedded Systems Research Lab",
+      "location": "Austin, TX",
+      "date_range": "Sep. 2025 – Present",
+      "url": "",
+      "extra_line": "",
+      "tags_json": [
+        "AI/ML",
+        "Systems",
+        "Embedded"
+      ],
+      "sort_order": 1,
+      "updated_at": ""
+    },
+    {
+      "id": "intern",
+      "section": "experience",
+      "title": "Software Engineering Intern",
+      "subtitle": "Meridian Labs",
+      "location": "Austin, TX",
+      "date_range": "May 2025 – Aug. 2025",
+      "url": "",
+      "extra_line": "",
+      "tags_json": [
+        "SWE",
+        "Systems"
+      ],
+      "sort_order": 2,
+      "updated_at": ""
+    },
+    {
+      "id": "pulse",
+      "section": "projects",
+      "title": "PulseDB",
+      "subtitle": "Rust, Tokio, Linux, Docker",
+      "location": "",
+      "date_range": "Jan. 2026 – Present",
+      "url": "https://github.com/alexmorgan/pulsedb",
+      "extra_line": "",
+      "tags_json": [
+        "Systems",
+        "SWE"
+      ],
+      "sort_order": 3,
+      "updated_at": ""
+    },
+    {
+      "id": "vision",
+      "section": "projects",
+      "title": "EdgeVision",
+      "subtitle": "Python, PyTorch, OpenCV, ONNX",
+      "location": "",
+      "date_range": "Sep. 2025 – Dec. 2025",
+      "url": "",
+      "extra_line": "",
+      "tags_json": [
+        "AI/ML",
+        "Embedded"
+      ],
+      "sort_order": 4,
+      "updated_at": ""
+    },
+    {
+      "id": "firm",
+      "section": "projects",
+      "title": "FreeRTOS Telemetry Node",
+      "subtitle": "Embedded C, STM32, FreeRTOS",
+      "location": "",
+      "date_range": "Jan. 2025 – May 2025",
+      "url": "",
+      "extra_line": "",
+      "tags_json": [
+        "Embedded",
+        "Systems"
+      ],
+      "sort_order": 5,
+      "updated_at": ""
+    },
+    {
+      "id": "lead",
+      "section": "leadership",
+      "title": "Firmware Team Lead",
+      "subtitle": "Longhorn Robotics",
+      "location": "Austin, TX",
+      "date_range": "Jan. 2025 – Present",
+      "url": "",
+      "extra_line": "",
+      "tags_json": [
+        "Embedded",
+        "General"
+      ],
+      "sort_order": 6,
+      "updated_at": ""
+    }
+  ],
+  "master_bullets": [
+    {
+      "id": "bullet-0",
+      "item_id": "lab",
+      "content": "Built a **Python** telemetry pipeline that processes **2M+ sensor readings** weekly for edge ML experiments.",
+      "tracks_json": [
+        "AI/ML",
+        "General"
+      ],
+      "sort_order": 0
+    },
+    {
+      "id": "bullet-1",
+      "item_id": "lab",
+      "content": "Reduced inference latency by **38%** with INT8 quantization and benchmarked accuracy across 4 embedded targets.",
+      "tracks_json": [
+        "AI/ML",
+        "Embedded"
+      ],
+      "sort_order": 1
+    },
+    {
+      "id": "bullet-2",
+      "item_id": "lab",
+      "content": "Profiled Linux scheduling jitter and reduced p99 latency from **12 ms to 4 ms** using CPU affinity.",
+      "tracks_json": [
+        "Systems"
+      ],
+      "sort_order": 2
+    },
+    {
+      "id": "bullet-3",
+      "item_id": "intern",
+      "content": "Shipped a TypeScript and React dashboard used by **120+ engineers** to review service health and deploys.",
+      "tracks_json": [
+        "SWE",
+        "General"
+      ],
+      "sort_order": 3
+    },
+    {
+      "id": "bullet-4",
+      "item_id": "intern",
+      "content": "Designed REST endpoints backed by PostgreSQL and Redis, cutting median query time by **41%**.",
+      "tracks_json": [
+        "SWE",
+        "Systems"
+      ],
+      "sort_order": 4
+    },
+    {
+      "id": "bullet-5",
+      "item_id": "intern",
+      "content": "Added **36 integration tests** to CI/CD and reduced release rollback time from 20 minutes to 5 minutes.",
+      "tracks_json": [
+        "SWE"
+      ],
+      "sort_order": 5
+    },
+    {
+      "id": "bullet-6",
+      "item_id": "pulse",
+      "content": "Implemented an async write-ahead log handling **48K writes/sec** across concurrent clients.",
+      "tracks_json": [
+        "SWE",
+        "Systems"
+      ],
+      "sort_order": 6
+    },
+    {
+      "id": "bullet-7",
+      "item_id": "pulse",
+      "content": "Containerized the service and added fault-injection tests to validate crash recovery in Docker.",
+      "tracks_json": [
+        "SWE",
+        "Systems"
+      ],
+      "sort_order": 7
+    },
+    {
+      "id": "bullet-8",
+      "item_id": "vision",
+      "content": "Trained a PyTorch computer vision model to achieve **94.2% accuracy** across 12 object classes.",
+      "tracks_json": [
+        "AI/ML",
+        "SWE"
+      ],
+      "sort_order": 8
+    },
+    {
+      "id": "bullet-9",
+      "item_id": "vision",
+      "content": "Exported to ONNX and profiled inference at **28 FPS** on a Raspberry Pi with OpenCV.",
+      "tracks_json": [
+        "AI/ML",
+        "Embedded"
+      ],
+      "sort_order": 9
+    },
+    {
+      "id": "bullet-10",
+      "item_id": "firm",
+      "content": "Built an STM32 FreeRTOS sensor node with **1 kHz** sampling and DMA-backed UART telemetry.",
+      "tracks_json": [
+        "Embedded",
+        "Systems"
+      ],
+      "sort_order": 10
+    },
+    {
+      "id": "bullet-11",
+      "item_id": "lead",
+      "content": "Led **6 contributors** and documented CAN bus integration for 3 robotics subsystems.",
+      "tracks_json": [
+        "Embedded",
+        "General"
+      ],
+      "sort_order": 11
+    }
+  ],
+  "skill_categories": [
+    {
+      "id": "languages",
+      "name": "Languages",
+      "sort_order": 0
+    },
+    {
+      "id": "frameworks",
+      "name": "Frameworks & Libraries",
+      "sort_order": 1
+    },
+    {
+      "id": "tools",
+      "name": "Systems & Tools",
+      "sort_order": 2
+    }
+  ],
+  "master_skills": [
+    {
+      "id": "skill-0",
+      "category_id": "languages",
+      "name": "Python",
+      "tracks_json": [
+        "General",
+        "AI/ML"
+      ],
+      "sort_order": 0
+    },
+    {
+      "id": "skill-1",
+      "category_id": "languages",
+      "name": "TypeScript",
+      "tracks_json": [
+        "SWE"
+      ],
+      "sort_order": 1
+    },
+    {
+      "id": "skill-2",
+      "category_id": "languages",
+      "name": "C++",
+      "tracks_json": [
+        "Systems",
+        "Embedded"
+      ],
+      "sort_order": 2
+    },
+    {
+      "id": "skill-3",
+      "category_id": "languages",
+      "name": "Rust",
+      "tracks_json": [
+        "SWE",
+        "Systems"
+      ],
+      "sort_order": 3
+    },
+    {
+      "id": "skill-4",
+      "category_id": "languages",
+      "name": "SQL",
+      "tracks_json": [
+        "SWE"
+      ],
+      "sort_order": 4
+    },
+    {
+      "id": "skill-5",
+      "category_id": "languages",
+      "name": "Embedded C",
+      "tracks_json": [
+        "Embedded"
+      ],
+      "sort_order": 5
+    },
+    {
+      "id": "skill-6",
+      "category_id": "frameworks",
+      "name": "React",
+      "tracks_json": [
+        "SWE"
+      ],
+      "sort_order": 6
+    },
+    {
+      "id": "skill-7",
+      "category_id": "frameworks",
+      "name": "Node.js",
+      "tracks_json": [
+        "SWE"
+      ],
+      "sort_order": 7
+    },
+    {
+      "id": "skill-8",
+      "category_id": "frameworks",
+      "name": "PyTorch",
+      "tracks_json": [
+        "AI/ML"
+      ],
+      "sort_order": 8
+    },
+    {
+      "id": "skill-9",
+      "category_id": "frameworks",
+      "name": "OpenCV",
+      "tracks_json": [
+        "AI/ML"
+      ],
+      "sort_order": 9
+    },
+    {
+      "id": "skill-10",
+      "category_id": "frameworks",
+      "name": "Tokio",
+      "tracks_json": [
+        "Systems"
+      ],
+      "sort_order": 10
+    },
+    {
+      "id": "skill-11",
+      "category_id": "frameworks",
+      "name": "ONNX",
+      "tracks_json": [
+        "AI/ML"
+      ],
+      "sort_order": 11
+    },
+    {
+      "id": "skill-12",
+      "category_id": "tools",
+      "name": "Git",
+      "tracks_json": [
+        "General"
+      ],
+      "sort_order": 12
+    },
+    {
+      "id": "skill-13",
+      "category_id": "tools",
+      "name": "Linux",
+      "tracks_json": [
+        "General",
+        "Systems"
+      ],
+      "sort_order": 13
+    },
+    {
+      "id": "skill-14",
+      "category_id": "tools",
+      "name": "Docker",
+      "tracks_json": [
+        "SWE",
+        "Systems"
+      ],
+      "sort_order": 14
+    },
+    {
+      "id": "skill-15",
+      "category_id": "tools",
+      "name": "PostgreSQL",
+      "tracks_json": [
+        "SWE"
+      ],
+      "sort_order": 15
+    },
+    {
+      "id": "skill-16",
+      "category_id": "tools",
+      "name": "Redis",
+      "tracks_json": [
+        "SWE"
+      ],
+      "sort_order": 16
+    },
+    {
+      "id": "skill-17",
+      "category_id": "tools",
+      "name": "CUDA",
+      "tracks_json": [
+        "AI/ML"
+      ],
+      "sort_order": 17
+    },
+    {
+      "id": "skill-18",
+      "category_id": "tools",
+      "name": "FreeRTOS",
+      "tracks_json": [
+        "Embedded"
+      ],
+      "sort_order": 18
+    }
+  ],
+  "resume_variants": [
+    {
+      "id": "base-swe",
+      "name": "Base SWE Intern",
+      "track": "SWE",
+      "config_json": {
+        "page_size": "letter",
+        "section_order": [
+          "education",
+          "experience",
+          "projects",
+          "leadership",
+          "publications",
+          "skills"
+        ],
+        "section_titles": {},
+        "layout": {
+          "margin_x_in": 0.55,
+          "margin_y_in": 0.48,
+          "font_size_pt": 10.5,
+          "line_height": 1.17,
+          "section_gap_pt": 8,
+          "item_gap_pt": 5,
+          "bullet_gap_pt": 1
+        },
+        "selected_items": [
+          {
+            "item_id": "edu",
+            "bullet_ids": []
+          },
+          {
+            "item_id": "intern",
+            "bullet_ids": [
+              "bullet-3",
+              "bullet-4",
+              "bullet-5"
+            ]
+          },
+          {
+            "item_id": "lab",
+            "bullet_ids": [
+              "bullet-0"
+            ]
+          },
+          {
+            "item_id": "pulse",
+            "bullet_ids": [
+              "bullet-6",
+              "bullet-7"
+            ]
+          },
+          {
+            "item_id": "vision",
+            "bullet_ids": [
+              "bullet-8"
+            ]
+          }
+        ],
+        "selected_skills": [
+          {
+            "category_id": "languages",
+            "skill_ids": [
+              "skill-0",
+              "skill-1",
+              "skill-3",
+              "skill-4"
+            ]
+          },
+          {
+            "category_id": "frameworks",
+            "skill_ids": [
+              "skill-6",
+              "skill-7"
+            ]
+          },
+          {
+            "category_id": "tools",
+            "skill_ids": [
+              "skill-12",
+              "skill-13",
+              "skill-14",
+              "skill-15",
+              "skill-16"
+            ]
+          }
+        ]
+      },
+      "created_at": "",
+      "updated_at": ""
+    },
+    {
+      "id": "base-ai",
+      "name": "AI/ML Research",
+      "track": "AI/ML",
+      "config_json": {
+        "page_size": "letter",
+        "section_order": [
+          "education",
+          "experience",
+          "projects",
+          "leadership",
+          "publications",
+          "skills"
+        ],
+        "section_titles": {},
+        "layout": {
+          "margin_x_in": 0.55,
+          "margin_y_in": 0.48,
+          "font_size_pt": 10.5,
+          "line_height": 1.17,
+          "section_gap_pt": 8,
+          "item_gap_pt": 5,
+          "bullet_gap_pt": 1
+        },
+        "selected_items": [
+          {
+            "item_id": "edu",
+            "bullet_ids": []
+          },
+          {
+            "item_id": "lab",
+            "bullet_ids": [
+              "bullet-0",
+              "bullet-1"
+            ]
+          },
+          {
+            "item_id": "intern",
+            "bullet_ids": [
+              "bullet-3"
+            ]
+          },
+          {
+            "item_id": "vision",
+            "bullet_ids": [
+              "bullet-8",
+              "bullet-9"
+            ]
+          }
+        ],
+        "selected_skills": [
+          {
+            "category_id": "languages",
+            "skill_ids": [
+              "skill-0"
+            ]
+          },
+          {
+            "category_id": "frameworks",
+            "skill_ids": [
+              "skill-8",
+              "skill-9",
+              "skill-11"
+            ]
+          },
+          {
+            "category_id": "tools",
+            "skill_ids": [
+              "skill-12",
+              "skill-13",
+              "skill-17"
+            ]
+          }
+        ]
+      },
+      "created_at": "",
+      "updated_at": ""
+    }
+  ],
+  "applications": [
+    {
+      "id": "app-0",
+      "company": "Northstar Robotics",
+      "role": "Embedded Systems Intern",
+      "track": "Embedded",
+      "stage": "wishlist",
+      "location": "Austin, TX",
+      "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
+      "applied_date": null,
+      "oa_deadline": null,
+      "oa_platform": "",
+      "created_at": "",
+      "updated_at": ""
+    },
+    {
+      "id": "app-1",
+      "company": "Cedar AI",
+      "role": "Machine Learning Intern",
+      "track": "AI/ML",
+      "stage": "applied",
+      "location": "Austin, TX",
+      "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
+      "applied_date": "2026-11-18",
+      "oa_deadline": null,
+      "oa_platform": "",
+      "created_at": "",
+      "updated_at": ""
+    },
+    {
+      "id": "app-2",
+      "company": "Meridian Labs",
+      "role": "Software Engineering Intern",
+      "track": "SWE",
+      "stage": "oa",
+      "location": "Austin, TX",
+      "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
+      "applied_date": "2026-11-15",
+      "oa_deadline": "2026-11-23",
+      "oa_platform": "CodeSignal",
+      "created_at": "",
+      "updated_at": ""
+    },
+    {
+      "id": "app-3",
+      "company": "Orbit Systems",
+      "role": "Platform Engineering Intern",
+      "track": "Systems",
+      "stage": "technical",
+      "location": "Austin, TX",
+      "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
+      "applied_date": "2026-11-12",
+      "oa_deadline": null,
+      "oa_platform": "",
+      "created_at": "",
+      "updated_at": ""
+    },
+    {
+      "id": "app-4",
+      "company": "Juniper Compute",
+      "role": "Software Engineering Intern",
+      "track": "SWE",
+      "stage": "offer",
+      "location": "Austin, TX",
+      "job_description": "Experience with Python, C++, React, Linux, CI/CD, and Docker. Familiarity with distributed systems and Kubernetes.",
+      "applied_date": "2026-11-09",
+      "oa_deadline": null,
+      "oa_platform": "",
+      "created_at": "",
+      "updated_at": ""
+    }
+  ]
+}
