@@ -1,6 +1,6 @@
 # ResumeForge
 
-ResumeForge is a local-first Windows desktop application for Computer Engineering students tailoring resumes for SWE, AI/ML, Systems, and Embedded internships.
+ResumeForge is a local-first Windows desktop application for students tailoring resumes for and tracking internships.
 
 - **Master Bank** stores your profile, entries, alternate bullets, and skills. The first-run sample includes two variants and five applications.
 - **Variant Studio** builds a resume from ordered selections, previews Jake’s layout on Letter or A4, and measures one-page density. The JD Matcher runs locally against its dictionary and your custom terms.
